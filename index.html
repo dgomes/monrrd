@@ -1,0 +1,128 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+	<head>
+		<title>RRD Graph</title>
+		<meta name = "viewport" content = "width=640px">
+		
+		<style>
+
+.center {
+	margin-right: auto;
+	margin-left: auto;
+	display: block;
+	text-align: center;
+}
+
+img.center {
+	border: 2px;
+	border-color: red;
+}
+
+span.center {
+	font-variant: small-caps;
+	font-family: Helvetica, Verdana, Arial, sans-serif;
+	font-size: small;
+	width: 4em;
+}
+
+.datepicker {
+	font-size: x-small;
+	font-family: Helvetica, Verdana, Arial, sans-serif;
+}
+
+h1 {
+	font-size: xx-large;
+	color: #6780ff;
+	line-height: 2em;
+	font-variant: small-caps;
+	font-family: "Lucida Grande", Verdana, Arial, sans-serif;
+	text-align: center;
+}
+
+div.center {
+	width: 640px;
+	height: 320px;
+	vertical-align: middle;
+}
+		</style>
+		
+		<link type="text/css" href="http://jquery-ui.googlecode.com/svn/trunk/themes/base/jquery.ui.core.css" rel="stylesheet" />
+		<link type="text/css" href="http://jquery-ui.googlecode.com/svn/trunk/themes/base/jquery.ui.datepicker.css" rel="stylesheet" />
+		<link type="text/css" href="http://jquery-ui.googlecode.com/svn/trunk/themes/base/jquery.ui.theme.css" rel="stylesheet" />
+
+		<script type="text/javascript" src="http://jqueryjs.googlecode.com/files/jquery-1.3.2.min.js"></script>
+		<script type="text/javascript" src="http://jquery-ui.googlecode.com/svn/trunk/ui/jquery.ui.core.js"></script>
+		<script type="text/javascript" src="http://jquery-ui.googlecode.com/svn/trunk/ui/jquery.ui.datepicker.js"></script>
+		
+		<script type="text/javascript">	
+			function selectGraph(range) {
+				var file = $("#file option:selected").val();
+				load("#stats_graph");
+				$("#stats_graph").load(
+					"rrdtool.sh",
+					"r="+range+"&rrd="+file,
+					function(){   
+						$("#stats_graph > img").addClass("center");
+					}
+				);
+			}
+			
+			function load(place) {
+				$(place).empty().append('<img src="loading.gif" alt="Loading..." /><span>Loading...</span>');
+				//center Loading info
+				$(place+" > img").addClass("center");
+				$(place+" > span").addClass("center");
+
+			}
+			  
+			$(document).ready(function() {
+				$("#file").load("options","",function() {		 
+					selectGraph('1d'); 
+				});
+				$("#file").change(function() {
+					selectGraph('1d');
+				});
+
+				//Set 1 day in milliseconds
+				var one_day=1000*60*60*24
+				
+				$("#datepicker > input").datepicker({ dateFormat: 'dd-mm-yy',
+					onSelect: function(dateText) { 
+						var now=new Date();
+						var then = $(this).datepicker('getDate');
+
+						//Calculate difference btw the two dates, and convert to days
+						var range = Math.max(Math.floor((now.getTime()-then.getTime())/(one_day)),1);
+						selectGraph(range+"d");
+					}, maxDate: '+0d', showOn: 'button', buttonImage: 'calendar.gif',buttonImageOnly: true
+				});
+				
+				//per default show 1 day
+				var now = new Date();
+				yesterday = (now.getDate()-1)+"-"+(now.getMonth()+1)+"-"+(now.getYear()+1900);
+
+				$("#datepicker > input").val(yesterday);		
+   			}); 
+   			
+		</script>
+	</head>
+
+	<body>
+		<h1>RRD Graph</h1>
+		<hr/>
+
+		<div class="center" id="stats_graph"></div>
+
+		<hr/>
+		<div class="center">
+			<div class="datepicker" id="datepicker">
+			Data source: <select name="rrds" id="file">
+  			</select>
+			
+			Start graph: <input class="datepicker" type="text" name="range" size="10"/>
+			</div>		
+		</div>
+	</body>
+</html>
+
+
