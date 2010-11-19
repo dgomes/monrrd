@@ -1,0 +1,10 @@
+place "host" dir in the host you wish to monitor
+
+place "server" dir in a remote server (or the localserver) http dir
+
+edit your crontab:
+
+*/5 * * * * /path/to/monrrd/rrdtool.sh net
+*/5 * * * * /path/to/monrrd/rrdtool.sh energy
+* 12 * * * /path/to/monrrd/rrdtool.sh backup
+
