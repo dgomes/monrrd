@@ -1,18 +1,19 @@
 WAN_ENABLED=true
+WANIF="zonhub"
+WANURL="http://192.168.1.1:2555/upnp/88642177-fdf1-3066-a209-ba9922068791/desc.xml"
 
 #####################################################################
 # Configuration End                                                 #
 #####################################################################
-date
+date 1>&2
 plugin=$1
 tmp=${plugin%.*}
 self=${tmp##*/}
 
-echo "Loading $self ..."
+echo "Loading $self ..." 1>&2
 
 if [ "${WAN_ENABLED}" == "true" ]; then
-	WANIF="zonhub"
-	echo "WAN Interface: ${WANIF}"
+	echo "WAN Interface: ${WANIF}" 1>&2
 	WANRRD="${RRDDATA}/${WANIF}.rrd"
 	RRD_FILES="${RRD_FILES} ${WANRRD}"
 fi
@@ -44,8 +45,8 @@ UpdateRRD ()
 		echo "Update ${rrdfile%.*}"
 		tmp=${rrdfile%.*}
 		dev=${tmp##*/}
-		OUT=`upnpc-static -s -u http://192.168.1.1:2555/upnp/88642177-fdf1-3066-a209-ba9922068791/desc.xml | grep Bytes | awk -F ":" '{print $3}' | awk -F " " '{print $1}'`
-		IN=`upnpc-static -s -u http://192.168.1.1:2555/upnp/88642177-fdf1-3066-a209-ba9922068791/desc.xml | grep Bytes | awk -F ":" '{print $4}' | awk -F " " '{print $1}'`
+		OUT=`upnpc -s -u ${WANURL} | grep Bytes | awk -F ":" '{print $3}' | awk -F " " '{print $1}'`
+		IN=`upnpc -s -u ${WANURL} | grep Bytes | awk -F ":" '{print $4}' | awk -F " " '{print $1}'`
 		`${RRDUPDATE} "${1}" -t inBytes:outBytes N:"${IN}":"${OUT}"`
 	fi
 }

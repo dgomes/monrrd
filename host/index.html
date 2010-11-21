@@ -59,7 +59,7 @@ div.center {
 				var file = $("#file option:selected").val();
 				load("#stats_graph");
 				$("#stats_graph").load(
-					"rrdtool.sh",
+					"../cgi-bin/rrdtool.sh",
 					"r="+range+"&rrd="+file,
 					function(){   
 						$("#stats_graph > img").addClass("center");

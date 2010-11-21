@@ -1,13 +1,14 @@
+IMETERURL="http://192.168.1.103/listdev.htm"
 
 #####################################################################
 # Configuration End                                                 #
 #####################################################################
-date
+date 1>&2
 
 plugin=$1
 tmp=${plugin%.*}
 self=${tmp##*/}
-echo "Loading $self ..."
+echo "Loading $self ..." 1>&2
 
 WANRRD="${RRDDATA}/energy.rrd"
 RRD_FILES="${RRD_FILES} ${WANRRD}"
@@ -35,9 +36,9 @@ UpdateRRD ()
 {
 	rrdfile=$1
 	if [ -f "${RRDUPDATE}" ]; then	
-		echo "Update ${rrdfile%.*}"
-		ENERGY=`wget -q -O - http://192.168.1.103/listdev.htm | grep Wh | cut -b 25- | cut -d \  -f 1`
-		POWER=`wget -q -O - http://192.168.1.103/listdev.htm | grep "W&nbsp" | cut -b 25- | cut -d \  -f 1`
+		echo "Update ${rrdfile%.*}" 1>&2
+		ENERGY=`wget -q -O - ${IMETERURL} | grep Wh | cut -b 25- | cut -d \  -f 1`
+		POWER=`wget -q -O - ${IMETERURL} | grep "W&nbsp" | cut -b 25- | cut -d \  -f 1`
 		`${RRDUPDATE} "${1}" -t energy:power N:"${ENERGY}":"${POWER}"`
 	fi
 }

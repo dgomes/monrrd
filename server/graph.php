@@ -7,16 +7,16 @@ $y_lenght=320;
 //don't touch below
 include('graph.inc');
 $chart_title="";
-if(array_key_exists('title',$_REQUEST) && !empty($_REQUEST[title])) 
-	$chart_title=urlencode($_REQUEST[title]);
+if(array_key_exists('title',$_REQUEST) && !empty($_REQUEST['title'])) 
+	$chart_title=urlencode($_REQUEST['title']);
 $in = "";
 $out = "";
 $x_axis = "|";
 $chart_size=$x_lenght."x".$y_lenght;
 
 if (array_key_exists('rrdxml',$_REQUEST)) {
-    if(empty($_REQUEST[rrdxml])) exit("empty rrdxml string");
-    $data_source = $_REQUEST[rrdxml];
+    if(empty($_REQUEST['rrdxml'])) exit("empty rrdxml string");
+    $data_source = $_REQUEST['rrdxml'];
     $xml = simplexml_load_string(($data_source));
 
     $rows = $xml->meta->rows;
@@ -53,6 +53,8 @@ if (array_key_exists('rrdxml',$_REQUEST)) {
     for($i=0; $i<=$rows; $i+=$rows/8)
 	    $x_axis.= date($date_format,intval($start+$step*$i))."|";
     $x_axis = substr($x_axis,0,-1);
+
+    $max = 0;
 
     for($i=0; $i<$rows; $i++) { 
 	    $c_in = floatval(str_replace("e ", "e+", $xml->data->row[$i]->v[0]));

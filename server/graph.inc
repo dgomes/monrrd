@@ -10,6 +10,7 @@
 // (optional) accepts $max number to set the maximum value on the y-axis
 function google_chart_encode($datastring, $method, $axestolabel="", $min="", $max="") {
 
+	$draworigin=false;
 	// Google encoding strings
 	$simple_encoding = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 	$extended_encoding = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789-.';
@@ -264,6 +265,7 @@ function google_chart_encode($datastring, $method, $axestolabel="", $min="", $ma
 
 		$labelbuffer .= "&chxt=" . $axestolabel . "\r";
 		$indexid = 0;
+		$valuebuffer = "";
 
 		if (strstr($axestolabel, "x")) {
 			// label x axis
