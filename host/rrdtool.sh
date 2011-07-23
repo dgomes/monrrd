@@ -48,7 +48,7 @@ if [ ! -z $args ]; then
 	. $RRDTOOL_SCRIPTS_DIR/$1.sh
 else
 	#We are being called through the webinterface! let's get jiggy with it!
-	echo Content-type: text/plain
+	echo Content-type: text/xml
 	echo ""
 	if [ ${#QUERY_STRING} -gt 0 ]; then
 		OPT=`echo "$QUERY_STRING" | sed -n 's/^.*opt=\([^&]*\).*$/\1/p' | sed "s/%20/ /g"`
@@ -83,6 +83,12 @@ else
 	. $RRDTOOL_SCRIPTS_DIR/${TYPE}.sh
 	ExportRRD ${WHICH}
 	
+	DBG_XML=`echo "$QUERY_STRING" | sed -n 's/^.*dbg=\([^&]*\).*$/\1/p' | sed "s/%20/ /g"`
+	if [ ${#DBG_XML} -gt 0 ]; then
+		echo "<xport>"
+		echo $XML
+		exit 1
+	fi
 	if [ ${#XML} -gt 0 ]; then
 		curl -4 -w '<!-- Elapsed Time: %{time_total} seconds -->\n' -d "title=${TITLE}" -d "rrdxml=<xport>${XML}" ${CONF_WEBSERVER} 2>/dev/null 
 	else
