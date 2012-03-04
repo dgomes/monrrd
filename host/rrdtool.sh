@@ -16,7 +16,7 @@ RRDTOOL=$RRDPATH/rrdtool
 RRDUPDATE=$RRDPATH/rrdupdate
 
 DEFAULT_RANGE=1d
-DEFAULT_RRD=zonhub
+DEFAULT_RRD=thomson
 DEFAULT_TYPE=net
 CONF_WEBSERVER=http://storage.local/monrrd/graph.php
 

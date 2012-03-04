@@ -1,6 +1,6 @@
 WAN_ENABLED=true
-WANIF="zonhub"
-WANURL="http://192.168.1.1:2555/upnp/88642177-fdf1-3066-a209-ba9922068791/desc.xml"
+WANIF="thomson"
+WANURL="http://192.168.1.254:8000/upnp/control/igd/wanpppc_1_1_1"
 
 #####################################################################
 # Configuration End                                                 #
